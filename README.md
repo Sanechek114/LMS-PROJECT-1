@@ -1,4 +1,6 @@
-# **Farm animals accounting app.**
-The application allows you to conveniently view, sort and keep records of farm animals data:  
-*record the animal's name, number, gender, date of birth, and more.*
-IN THE FUTURE
+# **Приложение для учёта сельскохозяйственных животных.**
+Приложение позволяет удобно просматривать, вести учёт данных о сельскохозяйственных животных:
+*записывать имя животного, номер, пол, дату рождения и другое.*
+
+## ТЗ 
+Сделать приложение для учета сельскохозяйственных животных.
