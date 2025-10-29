@@ -10,11 +10,11 @@ class Window(QMainWindow, Ui_MainWindow):
         self.initUI()
 
     def initUI(self):
+        self.setupUi(self)
         self.setWindowTitle('Учет сельскохозяйственых животных')
         self.setGeometry(100, 100, 1080, 720)
-        self.setupUi(self)
         # создание менюшки
-        menu_bar = self.menuBar() 
+        menu_bar = self.menuBar()
         menu = menu_bar.addMenu('файл')
         open_act = menu.addAction('открыть файл')
         rename_act = menu.addAction('переименовать файл')
@@ -50,4 +50,3 @@ if __name__ == "__main__":
     ex = Window()
     ex.show()
     sys.exit(app.exec())
-
