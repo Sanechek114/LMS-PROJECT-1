@@ -1,16 +1,28 @@
-from PyQt6.QtWidgets import (QApplication,
+from PyQt6.QtWidgets import (QApplication, QStackedWidget, QWidget,
                              QMainWindow)
 import sys
-from ui_file import Ui_MainWindow
+from table_search import Ui_form as TS_ui
+from addAnimal import Ui_Form as AA_ui
 
 
-class Window(QMainWindow, Ui_MainWindow):
+class Table_Search_CLASS(QWidget, TS_ui):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+
+class AddAnimal_CLASS(QWidget, AA_ui):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+
+class Window(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI()
 
     def initUI(self):
-        self.setupUi(self)
         self.setWindowTitle('Учет сельскохозяйственых животных')
         self.setGeometry(100, 100, 1080, 720)
         # создание менюшки
@@ -23,8 +35,16 @@ class Window(QMainWindow, Ui_MainWindow):
         open_act.triggered.connect(self.open_file)
         rename_act.triggered.connect(self.rename_file)
         delete_act.triggered.connect(self.delete_file)
+        table_searchWidget = Table_Search_CLASS()
+        addAnimalWidget = AddAnimal_CLASS()
+        self.layout = QStackedWidget()
+        self.layout.addWidget(table_searchWidget)
+        self.layout.addWidget(addAnimalWidget)
+        self.setCentralWidget(self.layout)
         # подключение кнопки
-        self.add_btn.clicked.connect(self.add_animal)
+        table_searchWidget.add_btn.clicked.connect(self.add_animal)
+
+        addAnimalWidget.save_btn.clicked.connect(self.save)
 
     def open_file(self):
         pass
@@ -36,13 +56,13 @@ class Window(QMainWindow, Ui_MainWindow):
         pass
 
     def add_animal(self):
-        pass
+        self.layout.setCurrentIndex(1)
 
     def edit_pet(self):
         pass
 
-    def refresh_table():
-        pass
+    def save(self):
+        self.layout.setCurrentIndex(0)
 
 
 if __name__ == "__main__":
