@@ -4,6 +4,8 @@ from PyQt6.QtWidgets import (QApplication,
                              QMainWindow)
 import sys
 import sqlite3
+from thems import (dark_style as DARK_THEME,
+                   light_style as LIGHT_THEME)
 from table_search import Table_Search_CLASS
 from addAnimal import AddAnimal_CLASS
 from sql_querys import (create_db_query, search_query,
@@ -38,11 +40,16 @@ class Window(QMainWindow, ):
         rename_act = menu.addAction('переименовать таблицу')
         create_act = menu.addAction('создать таблицу')
         delete_act = menu.addAction('удалить Таблицу')
+        theme_menu = menu_bar.addMenu('тема')
+        white_act = theme_menu.addAction('светлая')
+        black_act = theme_menu.addAction('темная')
         # подлючение меню к функциям
         open_act.triggered.connect(self.open_file)
         rename_act.triggered.connect(self.rename_file)
         create_act.triggered.connect(self.create_file)
         delete_act.triggered.connect(self.delete_file)
+        white_act.triggered.connect(self.apply_white)
+        black_act.triggered.connect(self.apply_black)
         self.table_searchWidget = Table_Search_CLASS()
         self.addAnimalWidget = AddAnimal_CLASS()
         self.setCentralWidget(self.table_searchWidget)
@@ -70,6 +77,16 @@ class Window(QMainWindow, ):
         # self.table_searchWidget.tableWidget.itemChanged.\
         #     connect(self.save_changes)
         self.load_table()
+
+    def apply_white(self):
+        self.setStyleSheet(LIGHT_THEME)
+        self.table_searchWidget.setStyleSheet(LIGHT_THEME)
+        self.addAnimalWidget.setStyleSheet(LIGHT_THEME)
+
+    def apply_black(self):
+        self.setStyleSheet(DARK_THEME)
+        self.table_searchWidget.setStyleSheet(DARK_THEME)
+        self.addAnimalWidget.setStyleSheet(DARK_THEME)
 
     def load_table(self):
         s = self.table_searchWidget.search_line.text()
