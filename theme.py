@@ -1,20 +1,27 @@
 dark_style = """
     QMainWindow {
-        background-color: #3a4a3f;
+        background-color: #4A4A4A;
+    }
+    QTableWidget QTableCornerButton::section {
+        background: #6F6F6F;
+        border: 0px outset black;
+    }
+    QHeaderView::section {
+        background: #6F6F6F;
     }
 
     QWidget {
-        background-color: #292929;
+        background-color: #404040;
         color: #ffffff;
         font-family: Arial;
     }
 
     QPushButton {
-        background-color: #404040;
+        background-color: #6F6F6F;
         color: white;
         border: 1px solid #555;
-        padding: 8px 16px;
-        border-radius: 4px;
+        padding: 1px 16px;
+        border-radius: 1px;
         font-size: 14px;
     }
 
@@ -69,6 +76,15 @@ dark_style = """
 light_style = """
     QMainWindow {
         background-color: #f5f5f5;
+    }
+
+    QTableWidget QTableCornerButton::section {
+        background: #cccccc;
+        border: 0px outset black;
+    }
+
+    QHeaderView::section {
+        background: #cccccc;
     }
 
     QWidget {
