@@ -13,7 +13,7 @@ create_db_query = '''CREATE TABLE animals (
 
 def search_query(s):
     return f'''SELECT * FROM animals
-    WHERE name LIKE '%{s}%' OR type LIKE '%{s}%' OR
+    WHERE id = '{s}' OR name LIKE '%{s}%' OR type LIKE '%{s}%' OR
         code LIKE "%{s}%" OR breed LIKE "%{s}%"
     ORDER BY name'''
 
