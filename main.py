@@ -1,6 +1,7 @@
-from PyQt6.QtWidgets import (QApplication,
+from PyQt6.QtWidgets import (QApplication, QAbstractItemView,
                              QInputDialog, QMessageBox,
                              QTableWidgetItem, QHeaderView,
+                             QTableWidget,
                              QMainWindow)
 import sys
 import sqlite3
@@ -37,12 +38,12 @@ class Window(QMainWindow, ):
         menu_bar = self.menuBar()
         menu = menu_bar.addMenu('Таблица')
         open_act = menu.addAction('Выбрать другую таблицу')
-        rename_act = menu.addAction('переименовать таблицу')
-        create_act = menu.addAction('создать таблицу')
-        delete_act = menu.addAction('удалить Таблицу')
-        theme_menu = menu_bar.addMenu('тема')
-        white_act = theme_menu.addAction('светлая')
-        black_act = theme_menu.addAction('темная')
+        rename_act = menu.addAction('Переименовать таблицу')
+        create_act = menu.addAction('Создать таблицу')
+        delete_act = menu.addAction('Удалить Таблицу')
+        theme_menu = menu_bar.addMenu('Тема')
+        white_act = theme_menu.addAction('Светлая')
+        black_act = theme_menu.addAction('Темная')
         # подлючение меню к функциям
         open_act.triggered.connect(self.open_file)
         rename_act.triggered.connect(self.rename_file)
@@ -57,6 +58,7 @@ class Window(QMainWindow, ):
         self.table_searchWidget.add_btn.clicked.\
             connect(lambda: self.addAnimalWidget.show())
         self.addAnimalWidget.save_btn.clicked.connect(self.save)
+        self.addAnimalWidget.setWindowTitle('Запись информации')
         self.table_searchWidget.del_btn.clicked.connect(self.delete_animal)
         # подключение поисковой строки
         self.table_searchWidget.search_line.textChanged.\
@@ -77,6 +79,9 @@ class Window(QMainWindow, ):
         # self.table_searchWidget.tableWidget.itemChanged.\
         #     connect(self.save_changes)
         self.load_table()
+        self.setStyleSheet(LIGHT_THEME)
+        self.table_searchWidget.setStyleSheet(LIGHT_THEME)
+        self.addAnimalWidget.setStyleSheet(LIGHT_THEME)
 
     def apply_white(self):
         self.setStyleSheet(LIGHT_THEME)
@@ -155,7 +160,7 @@ class Window(QMainWindow, ):
         print(name, type, day, month, year, breed, code)
         if all([name, breed, code]):
             self.cur.execute(create_row_query(name, type, day,
-                                              month, year, breed, code))
+                                              month, year, code, breed))
             self.addAnimalWidget.close()
             self.con.commit()
             self.load_table()
