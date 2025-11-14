@@ -22,7 +22,7 @@ def delete_query(s):
     return f'DELETE FROM animals WHERE id = {s}'
 
 
-def create_row_query(name, type, day, month, year, breed, code=''):
+def create_row_query(name, type, day, month, year, breed, code):
     return f"INSERT INTO animals(name, type, day, month, year, breed, code) \
         VALUES('{name}', '{type}', {day}, \
             {month}, {year}, '{breed}', '{code}')"
