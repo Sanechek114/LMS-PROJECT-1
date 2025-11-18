@@ -1,10 +1,11 @@
-from PyQt6.QtWidgets import (QApplication, QAbstractItemView,
+from PyQt6.QtWidgets import (QApplication,
                              QInputDialog, QMessageBox,
                              QTableWidgetItem, QHeaderView,
-                             QTableWidget,
                              QMainWindow)
+from PyQt6.QtGui import QIcon
 import sys
 import sqlite3
+from random import choices
 from thems import (dark_style as DARK_THEME,
                    light_style as LIGHT_THEME)
 from table_search import Table_Search_CLASS
@@ -20,21 +21,29 @@ class Window(QMainWindow, ):
 
     def initUI(self):
         self.setWindowTitle('Учет сельскохозяйственых животных')
+        self.setWindowIcon(QIcon('res/ico.png'))
         self.setGeometry(100, 100, 1080, 720)
-        with open('config.txt', mode='r', encoding='utf-8') as f:
-            self.settings = f.read().split('\n')
-        self.con = sqlite3.connect(self.settings[0])
+        self.run = False
+        self.table_searchWidget = Table_Search_CLASS()
+        self.addAnimalWidget = AddAnimal_CLASS()
+        self.con = sqlite3.connect('animals_db.sqlite')
         self.cur = self.con.cursor()
+        self.load_TR = False
+        self.tables = []
+        with open('config.txt', mode='r', encoding='utf-8') as f:
+            self.settings = f.read().strip()
+            while self.settings == '':
+                self.open_file()
         self.modified = {}
-        self.columnsinbd = {0: 'id',
-                            1: 'name = "{}"',
-                            2: 'type = "{}"',
-                            3: 'day = {}',
-                            4: 'month = {}',
-                            5: 'year = {}',
-                            6: 'breed = "{}"',
-                            7: 'code = "{}"'}
+        self.columns_in_bd = {
+            0: 'id',
+            1: 'name = ',
+            2: 'type = ',
+            3: 'year = ',
+            4: 'breed = ',
+            5: 'code = '}
         # создание менюшки
+        self.status_bar = self.statusBar()
         menu_bar = self.menuBar()
         menu = menu_bar.addMenu('Таблица')
         open_act = menu.addAction('Выбрать другую таблицу')
@@ -51,8 +60,6 @@ class Window(QMainWindow, ):
         delete_act.triggered.connect(self.delete_file)
         white_act.triggered.connect(self.apply_white)
         black_act.triggered.connect(self.apply_black)
-        self.table_searchWidget = Table_Search_CLASS()
-        self.addAnimalWidget = AddAnimal_CLASS()
         self.setCentralWidget(self.table_searchWidget)
         # подключение кнопки
         self.table_searchWidget.add_btn.clicked.\
@@ -68,34 +75,44 @@ class Window(QMainWindow, ):
         self.table_searchWidget.tableWidget.setRowCount(0)
         header = ['id', 'Имя', 'Вид', 'Дата рождения',
                   'Порода', 'Код на ушной бирке']
+        self.table_searchWidget.tableWidget.verticalHeader().setVisible(False)
         self.table_searchWidget.tableWidget.setHorizontalHeaderLabels(header)
         header = self.table_searchWidget.tableWidget.horizontalHeader()
+        header.setDisabled(False)
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
-        # self.table_searchWidget.tableWidget.itemChanged.\
-        #     connect(self.save_changes)
+        self.table_searchWidget.tableWidget.itemChanged.connect(
+            self.save_changes)
         self.load_table()
-        self.setStyleSheet(LIGHT_THEME)
-        self.table_searchWidget.setStyleSheet(LIGHT_THEME)
-        self.addAnimalWidget.setStyleSheet(LIGHT_THEME)
+        with open('theme.txt', mode='r', encoding='utf-8') as f:
+            self.theme = f.read()
+        if self.theme == 'light':
+            self.apply_white()
+        else:
+            self.apply_black()
 
     def apply_white(self):
         self.setStyleSheet(LIGHT_THEME)
         self.table_searchWidget.setStyleSheet(LIGHT_THEME)
         self.addAnimalWidget.setStyleSheet(LIGHT_THEME)
+        with open('theme.txt', mode='w', encoding='utf-8') as f:
+            self.theme = f.write('light')
 
     def apply_black(self):
         self.setStyleSheet(DARK_THEME)
         self.table_searchWidget.setStyleSheet(DARK_THEME)
         self.addAnimalWidget.setStyleSheet(DARK_THEME)
+        with open('theme.txt', mode='w', encoding='utf-8') as f:
+            self.theme = f.write('dark')
 
     def load_table(self):
+        self.run = False
         s = self.table_searchWidget.search_line.text()
-        res = self.cur.execute(search_query(s)).fetchall()
+        res = self.cur.execute(search_query(s, self.settings)).fetchall()
         self.table_searchWidget.tableWidget.setRowCount(0)
         for i, row in enumerate(res):
             self.table_searchWidget.tableWidget.setRowCount(
@@ -112,19 +129,77 @@ class Window(QMainWindow, ):
                 i, 4, QTableWidgetItem(str(row[6])))
             self.table_searchWidget.tableWidget.setItem(
                 i, 5, QTableWidgetItem(str(row[7])))
-        self.modified = {}
+        self.table_searchWidget.label.setText(
+            f"Поиск по таблице {self.settings}:")
+        self.run = True
 
     def open_file(self):
-        pass
+        self.run = False
+        self.tables = list(map(lambda x: x[0], self.cur.execute(
+            "SELECT name FROM sqlite_master WHERE type='table';").fetchall()))
+        self.tables.remove('sqlite_sequence')
+        if len(self.tables) == 0:
+            self.create_file()
+            print('no table')
+        else:
+            table, ok_pressed = QInputDialog.getItem(
+                self, "Выберите вашу таблицу", "",
+                tuple(self.tables), 1, False)
+            if table != '' and ok_pressed:
+                self.settings = table
+
+            with open('config.txt', mode='w+', encoding='utf-8') as f:
+                f.write(self.settings)
+            self.load_table()
+            if self.load_TR:
+                self.load_table()
+            else:
+                self.load_TR = True
+        self.run = True
 
     def rename_file(self):
-        pass
+        self.run = False
+        name, ok_presed = QInputDialog.getText(
+            self, 'Ввод', 'Введите название таблицы:')
+        if ok_presed:
+            self.cur.execute(
+                f'ALTER TABLE {self.settings} RENAME TO {name};')
+            self.settings = name
+            self.load_table()
+            with open('config.txt', mode='w+', encoding='utf-8') as f:
+                f.write(self.settings)
+        self.con.commit()
+        self.run = True
 
     def delete_file(self):
-        pass
+        reply = QMessageBox.question(
+            self,
+            "Вопрос",
+            f"Вы уверены, что хотите удалить\
+                      {self.settings} ?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+            self.cur.execute(f'DROP TABLE {self.settings}')
+
+            self.con.commit()
+            self.open_file()
 
     def create_file(self):
-        pass
+        with open('config.txt', mode='w+', encoding='utf-8') as f:
+            self.settings = f.read().strip()
+            if self.settings == '':
+                self.settings, ok = QInputDialog.getText(
+                    self, 'Ввод', 'Введите название таблицы:')
+                if not ok:
+                    self.settings = (
+                        ''.join(choices('qwertyuiopasdfghjklzxcvbnm',
+                                        k=10)))
+            f.write(self.settings)
+            self.tables.append(self.settings)
+            self.cur.execute(create_db_query(self.settings))
+            self.con.commit()
+        self.load_table()
 
     def delete_animal(self):
         row = self.table_searchWidget.tableWidget.currentRow()
@@ -139,17 +214,29 @@ class Window(QMainWindow, ):
                       {name} ?",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 QMessageBox.StandardButton.No)
-            print(id)
             if reply == QMessageBox.StandardButton.Yes:
-                self.cur.execute(delete_query(id))
+                self.cur.execute(delete_query(id, self.settings))
                 self.con.commit()
                 self.load_table()
-                print('delete')
-#
-#    def save_changes(self, item):
-#        id = self.table_searchWidget.tableWidget.item(item.row(, 0).text()
-#        self.modified[id] = item.text()
-#        print(item.row(), item.text())
+
+    def changed(self, item):
+        self.save_changes(item)
+
+    def save_changes(self, item):
+        if self.run:
+            id = self.table_searchWidget.tableWidget.item(item.row(), 0).text()
+
+            data = []
+            for i in range(6):
+                data.append(self.table_searchWidget.tableWidget.item(
+                    item.row(), i).text())
+            day, month, year = tuple(data[3].split('.'))
+            self.cur.execute(f"UPDATE {self.settings} SET name = '{data[1]}', \
+                                type = '{data[2]}', day = '{day}', \
+                                month = {month}, year = {year}, \
+                                breed = '{data[4]}', code = '{data[5]}' \
+                                WHERE id = {id};")
+            self.con.commit()
 
     def save(self):
         name = self.addAnimalWidget.name.text()
@@ -157,10 +244,9 @@ class Window(QMainWindow, ):
         type = self.addAnimalWidget.species.currentText()
         year, month, day = self.addAnimalWidget.DateEdit.date().getDate()
         code = self.addAnimalWidget.code.text()
-        print(name, type, day, month, year, breed, code)
         if all([name, breed, code]):
-            self.cur.execute(create_row_query(name, type, day,
-                                              month, year, code, breed))
+            self.cur.execute(create_row_query(
+                self.settings, name, type, day, month, year, code, breed))
             self.addAnimalWidget.close()
             self.con.commit()
             self.load_table()

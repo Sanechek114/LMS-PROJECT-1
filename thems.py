@@ -1,36 +1,68 @@
 dark_style = """
     QMainWindow {
-        background-color: #4A4A4A;
-    }
-    QTableWidget QTableCornerButton::section {
-        background: #6F6F6F;
-        border: 0px outset black;
-    }
-    QHeaderView::section {
-        background: #6F6F6F;
+        background-color: #3a4a3f;
     }
 
     QWidget {
-        background-color: #404040;
+        background-color: #292929;
         color: #ffffff;
         font-family: Arial;
     }
+    QMenu::item {
+    border: 1px solid #007ae3;
+    border-radius: 4px;
+    padding: 2px 2px;
+    background-color: #333333;
+    }
+    QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+    border-left-width: 1px;
+    border-left-color: darkgray;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    }
+    QMenuBar::item {
+    border: 1px solid #007ae3;
+    spacing: 3px;
+    background: #004078;
+    padding: 4px 4px;
+    border-radius: 1px;
+    }
+
+    QGroupBox {
+    border: 2px solid gray;
+    border-radius: 5px;
+    margin-top: 10px;
+    }
+
+    QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    padding: 0px 20px;
+    }
 
     QPushButton {
-        background-color: #6F6F6F;
+        background-color: #007ae3;
         color: white;
-        border: 1px solid #555;
-        padding: 1px 16px;
-        border-radius: 1px;
+        border: 1px solid #004078;
+        padding: 8px 16px;
+        border-radius: 4px;
         font-size: 14px;
     }
 
+    QHeaderView::section {
+        background: #004078;
+    }
+
     QPushButton:hover {
-        background-color: #505050;
+        background-color: #52afff;
     }
 
     QPushButton:pressed {
-        background-color: #606060;
+        background-color: #a7d4fa;
     }
 
     QLineEdit {
@@ -44,7 +76,7 @@ dark_style = """
     }
 
     QLineEdit:focus {
-        border: 1px solid #666;
+        border: 1px solid #005eff;
     }
 
     QTextBrowser {
@@ -78,23 +110,55 @@ light_style = """
         background-color: #f5f5f5;
     }
 
-    QTableWidget QTableCornerButton::section {
-        background: #cccccc;
-        border: 0px outset black;
-    }
-
-    QHeaderView::section {
-        background: #cccccc;
-    }
-
     QWidget {
         background-color: #f5f5f5;
         color: #333333;
         font-family: Arial;
     }
 
+    QMenu::item {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 2px 2px;
+    background-color: #bcf279;
+    }
+
+    QMenuBar::item {
+    border: 1px solid #ccc;
+    spacing: 3px;
+    background: #94e630;
+    padding: 4px 4px;
+    border-radius: 1px;
+    }
+
+    QGroupBox {
+    border: 2px solid gray;
+    border-radius: 5px;
+    margin-top: 10px;
+    }
+    QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    padding: 0px 20px;
+    }
+
+    QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+    border-left-width: 2px;
+    border-left-color: darkgray;
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    }
+
+    QHeaderView::section {
+        background: #bcf279;
+    }
+
     QPushButton {
-        background-color: #e0e0e0;
+        background-color: #94e630;
         color: #333333;
         border: 1px solid #ccc;
         padding: 8px 16px;
@@ -103,16 +167,16 @@ light_style = """
     }
 
     QPushButton:hover {
-        background-color: #d0d0d0;
+        background-color: #b4ff59;
     }
 
     QPushButton:pressed {
-        background-color: #c0c0c0;
+        background-color: #ceff91;
     }
 
     QLineEdit {
         background-color: white;
-        color: #333333;
+        color: #222222;
         border: 1px solid #ccc;
         border-radius: 4px;
         padding: 6px;
@@ -122,7 +186,7 @@ light_style = """
     }
 
     QLineEdit:focus {
-        border: 1px solid #0078d4;
+        border: 1px solid #b9d100;
     }
 
     QTextBrowser {

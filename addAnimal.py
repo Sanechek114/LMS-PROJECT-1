@@ -1,5 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget, QLabel
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QIcon
 
 
 class Ui_Form(object):
@@ -20,7 +22,8 @@ class Ui_Form(object):
         font.setPointSize(10)
         self.label.setFont(font)
         self.label.setObjectName("label")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label)
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.LabelRole,
+                                  self.label)
         self.species = QtWidgets.QComboBox(parent=self.groupBox)
         font = QtGui.QFont()
         font.setPointSize(10)
@@ -32,56 +35,65 @@ class Ui_Form(object):
         self.species.addItem("")
         self.species.addItem("")
         self.species.addItem("")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.FieldRole, self.species)
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.FieldRole,
+                                  self.species)
         self.Label = QtWidgets.QLabel(parent=self.groupBox)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.Label.setFont(font)
         self.Label.setObjectName("Label")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.LabelRole, self.Label)
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.LabelRole,
+                                  self.Label)
         self.name = QtWidgets.QLineEdit(parent=self.groupBox)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.name.setFont(font)
         self.name.setObjectName("name")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.FieldRole, self.name)
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.FieldRole,
+                                  self.name)
         self.Label_2 = QtWidgets.QLabel(parent=self.groupBox)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.Label_2.setFont(font)
         self.Label_2.setObjectName("Label_2")
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.LabelRole, self.Label_2)
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.LabelRole,
+                                  self.Label_2)
         self.DateEdit = QtWidgets.QDateEdit(parent=self.groupBox)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.DateEdit.setFont(font)
         self.DateEdit.setCalendarPopup(True)
         self.DateEdit.setObjectName("DateEdit")
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.FieldRole, self.DateEdit)
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.FieldRole,
+                                  self.DateEdit)
         self.Label_4 = QtWidgets.QLabel(parent=self.groupBox)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.Label_4.setFont(font)
         self.Label_4.setObjectName("Label_4")
-        self.formLayout.setWidget(3, QtWidgets.QFormLayout.ItemRole.LabelRole, self.Label_4)
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.ItemRole.LabelRole,
+                                  self.Label_4)
         self.breed = QtWidgets.QLineEdit(parent=self.groupBox)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.breed.setFont(font)
         self.breed.setObjectName("breed")
-        self.formLayout.setWidget(3, QtWidgets.QFormLayout.ItemRole.FieldRole, self.breed)
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.ItemRole.FieldRole,
+                                  self.breed)
         self.Label_3 = QtWidgets.QLabel(parent=self.groupBox)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.Label_3.setFont(font)
         self.Label_3.setObjectName("Label_3")
-        self.formLayout.setWidget(4, QtWidgets.QFormLayout.ItemRole.LabelRole, self.Label_3)
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.ItemRole.LabelRole,
+                                  self.Label_3)
         self.code = QtWidgets.QLineEdit(parent=self.groupBox)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.code.setFont(font)
         self.code.setObjectName("code")
-        self.formLayout.setWidget(4, QtWidgets.QFormLayout.ItemRole.FieldRole, self.code)
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.ItemRole.FieldRole,
+                                  self.code)
         self.verticalLayout.addWidget(self.groupBox)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -115,3 +127,8 @@ class AddAnimal_CLASS(QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QIcon('res/ico.png'))
+        label = QLabel(self)
+        label.setScaledContents(True)
+        label.setPixmap(QPixmap('res/image.jpg'))
+        self.formLayout.addWidget(label)
